@@ -4,7 +4,6 @@ import com.example.model.UserDao;
 import com.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,7 +16,7 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @RequestMapping(value = "/create/{username}", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/{username}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@PathVariable(name="username") String name, @RequestParam(name="email") String email){
         User user = null;
@@ -31,9 +30,9 @@ public class UserController {
         return user;
     }
 
-    @RequestMapping(value = "/get-by-email", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{email}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.FOUND)
-    public User getUserByEmail(@RequestParam("email") String email){
+    public User getUserByEmail(@PathVariable("email") String email){
         User user = null;
         try{
             user = userDao.findByEmail(email);
@@ -42,6 +41,20 @@ public class UserController {
             e.printStackTrace();
         }
         return user;
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.FOUND)
+    public Iterable<User> getUserByEmail() {
+
+        Iterable<User> users = null;
+        try {
+            users = userDao.findAll();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
 }
